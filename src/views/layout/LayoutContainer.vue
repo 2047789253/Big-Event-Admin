@@ -23,7 +23,7 @@ onMounted(() => {
 
 const handleCommand = async (command) => {
   if (command === 'logout') {
-    await ElMessageBox.conform('确定退出登录吗？', '温馨提示', {
+    await ElMessageBox.confirm('确定退出登录吗？', '温馨提示', {
       type: 'warning',
       confirmButtonText: '确定',
       cancelButtonText: '取消'
