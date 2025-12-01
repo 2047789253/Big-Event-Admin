@@ -1,7 +1,9 @@
 <script setup>
 import { userRegisterService } from '@/api/user'
 import { User, Lock } from '@element-plus/icons-vue'
+import { ElMessage } from 'element-plus'
 import { ref } from 'vue'
+
 const isRegister = ref(true)
 const form = ref()
 const formModel = ref({
@@ -12,7 +14,7 @@ const formModel = ref({
 const rules = {
   username: [
     { required: true, message: '请输入用户名', trigger: 'blur' },
-    { min: 3, max: 12, message: '用户名长度在3到12个字符之间', trigger: 'blur' }
+    { min: 5, max: 10, message: '用户名长度在5到10个字符之间', trigger: 'blur' }
   ],
   password: [
     { required: true, message: '请输入密码', trigger: 'blur' },
@@ -36,7 +38,7 @@ const rules = {
 const register = async () => {
   await form.value.validate()
   await userRegisterService(formModel.value)
-  alert('注册成功，请登录')
+  ElMessage.success('注册成功，请登录')
   isRegister.value = false
 }
 </script>

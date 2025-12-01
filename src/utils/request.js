@@ -43,7 +43,8 @@ instance.interceptors.response.use(
     }
 
     // 错误的默认情况 => 只要给提示
-    ElMessage.error(err.response.data.message || '服务异常')
+    // 修改点：使用 ?. 可选链操作符，防止 err.response 为 undefined 时报错
+    ElMessage.error(err.response?.data?.message || err.message || '服务异常')
     return Promise.reject(err)
   }
 )
