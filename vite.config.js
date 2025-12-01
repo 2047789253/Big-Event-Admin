@@ -5,17 +5,21 @@ import vueDevTools from 'vite-plugin-vue-devtools'
 import AutoImport from 'unplugin-auto-import/vite'
 import Components from 'unplugin-vue-components/vite'
 import { ElementPlusResolver } from 'unplugin-vue-components/resolvers'
+import ElementPlus from 'unplugin-element-plus/vite'
 // https://vite.dev/config/
 
 export default defineConfig({
   plugins: [
     vue(),
     vueDevTools(),
+    ElementPlus({
+      useSource: true // 使用 scss 源文件，配合项目中的 sass 依赖
+    }),
     AutoImport({
-      resolvers: [ElementPlusResolver()]
+      resolvers: [ElementPlusResolver({ importStyle: 'sass' })]
     }),
     Components({
-      resolvers: [ElementPlusResolver()]
+      resolvers: [ElementPlusResolver({ importStyle: 'sass' })]
     })
   ],
   base: '/',
