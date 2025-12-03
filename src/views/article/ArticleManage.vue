@@ -19,6 +19,13 @@ const articleList = ref([
     cate_name: '体育'
   }
 ])
+//请求参数对象
+const params = ref({
+  pagenum: 1,
+  pagesize: 10,
+  cate_id: '',
+  state: ''
+})
 const onEditAriticle = (row) => {
   console.log('编辑文章', row)
 }
@@ -26,6 +33,7 @@ const onDeleteArticle = (row) => {
   console.log('删除文章', row)
 }
 </script>
+
 <template>
   <PageContainer title="文章管理">
     <template #extra>
@@ -35,10 +43,10 @@ const onDeleteArticle = (row) => {
     <!-- 表单区域 -->
     <el-form inline>
       <el-form-item label="文章分类:" style="width: 200px">
-        <ChannelSelect></ChannelSelect>
+        <ChannelSelect v-model="params.cate_id"></ChannelSelect>
       </el-form-item>
       <el-form-item label="发布状态:" style="width: 200px">
-        <el-select>
+        <el-select v-model="params.state">
           <el-option label="已发布" value="已发布"></el-option>
           <el-option label="待审核" value="待审核"></el-option>
         </el-select>
