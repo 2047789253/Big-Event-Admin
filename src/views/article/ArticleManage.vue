@@ -2,30 +2,26 @@
 import { Delete, Edit } from '@element-plus/icons-vue'
 import { ref } from 'vue'
 import ChannelSelect from './components/ChannelSelect.vue'
+import { artGetArticlesService } from '@/api/article'
+import { formatTime } from '@/utils/format'
 
-const articleList = ref([
-  {
-    Id: 5961,
-    title: '新的文章啊',
-    pub_date: '2022-07-10 14:53:52.604',
-    state: '已发布',
-    cate_name: '体育'
-  },
-  {
-    Id: 5962,
-    title: '新的文章啊',
-    pub_date: '2022-07-10 14:54:30.904',
-    state: '待审核',
-    cate_name: '体育'
-  }
-])
+const articleList = ref([]) //文章列表数据
+const total = ref(0) //总条数
 //请求参数对象
 const params = ref({
   pagenum: 1,
-  pagesize: 10,
+  pagesize: 5,
   cate_id: '',
   state: ''
 })
+//发送请求获取文章列表
+const getArticleList = async () => {
+  const res = await artGetArticlesService(params.value)
+  articleList.value = res.data.data
+  total.value = res.data.total
+}
+getArticleList()
+
 const onEditAriticle = (row) => {
   console.log('编辑文章', row)
 }
@@ -66,7 +62,11 @@ const onDeleteArticle = (row) => {
         </template>
       </el-table-column>
       <el-table-column label="分类" prop="cate_name"></el-table-column>
-      <el-table-column label="发布时间" prop="pub_date"></el-table-column>
+      <el-table-column label="发布时间" prop="pub_date">
+        <template #default="{ row }">
+          {{ formatTime(row.pub_date) }}
+        </template>
+      </el-table-column>
       <el-table-column label="状态" prop="state"></el-table-column>
       <el-table-column label="操作">
         <template #default="{ row }">
@@ -87,6 +87,12 @@ const onDeleteArticle = (row) => {
         </template>
       </el-table-column>
     </el-table>
+    <el-pagination
+      style="margin-top: 20px; text-align: right"
+      background
+      layout="prev, pager, next, jumper"
+      :total="total"
+    ></el-pagination>
   </PageContainer>
 </template>
 

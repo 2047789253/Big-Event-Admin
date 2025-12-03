@@ -10,7 +10,6 @@ const channelList = ref([])
 const getChannelList = async () => {
   const res = await artGetChannelsService()
   channelList.value = res.data.data
-  console.log(channelList.value)
 }
 getChannelList()
 </script>
