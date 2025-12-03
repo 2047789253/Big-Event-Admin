@@ -1,8 +1,9 @@
 <script setup>
 import { ref } from 'vue'
 import { Edit, Delete } from '@element-plus/icons-vue'
-import { artGetChannelsService } from '@/api/article'
-import ChannelEdit from './ChannelEdit.vue'
+import { artGetChannelsService, artDelChannelService } from '@/api/article'
+import ChannelEdit from './components/ChannelEdit.vue'
+import { ElMessage, ElMessageBox } from 'element-plus'
 const channelList = ref([])
 const loading = ref(false)
 const dialog = ref()
@@ -12,17 +13,26 @@ const getChannelList = async () => {
   const res = await artGetChannelsService()
   channelList.value = res.data.data
   loading.value = false
-  console.log(channelList.value)
 }
 getChannelList()
 const onEditChannel = (row) => {
   dialog.value.open(row)
 }
-const onDelChannel = (row, $index) => {
-  dialog.value.open({ row, $index })
+const onDelChannel = async (row) => {
+  await ElMessageBox.confirm('是否确认删除该分类？', '提示', {
+    type: 'warning',
+    confirmButtonText: '确认',
+    cancelButtonText: '取消'
+  })
+  await artDelChannelService(row.id)
+  ElMessage.success('删除成功')
+  getChannelList()
 }
 const onAddChannel = () => {
   dialog.value.open({})
+}
+const onSuccess = () => {
+  getChannelList()
 }
 </script>
 
@@ -50,7 +60,7 @@ const onAddChannel = () => {
             circle
             plain
             type="danger"
-            @click="onDelChannel(row, $index)"
+            @click="onDelChannel(row)"
           ></el-button>
         </template>
       </el-table-column>
@@ -60,7 +70,7 @@ const onAddChannel = () => {
       </template>
     </el-table>
 
-    <ChannelEdit ref="dialog"></ChannelEdit>
+    <ChannelEdit ref="dialog" @success="onSuccess"></ChannelEdit>
   </PageContainer>
 </template>
 
