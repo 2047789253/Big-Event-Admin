@@ -2,6 +2,7 @@
 import { Delete, Edit } from '@element-plus/icons-vue'
 import { ref } from 'vue'
 import ChannelSelect from './components/ChannelSelect.vue'
+import ArticleEdit from './components/ArticleEdit.vue'
 import { artGetArticlesService } from '@/api/article'
 import { formatTime } from '@/utils/format'
 
@@ -46,19 +47,27 @@ const onReset = () => {
   params.value.pagenum = 1 //重置页码为1
   getArticleList()
 }
-//控制抽屉显示隐藏
-const visibleDrawer = ref(false)
+//导入给组件
+const articleEditRef = ref()
 //添加逻辑
 const onAddArticle = () => {
-  visibleDrawer.value = true
+  articleEditRef.value.open({}) //调用子组件中的open方法，传入空对象
 }
 //编辑逻辑
 const onEditArticle = (row) => {
-  console.log('编辑文章', row)
+  articleEditRef.value.open(row) //调用子组件中的open方法，传入当前行数据
 }
 //删除逻辑
 const onDeleteArticle = (row) => {
   console.log('删除文章', row)
+}
+//监听子组件成功事件，刷新列表
+const onSuccess = (type) => {
+  if (type === 'add') {
+    const lastPage = Math.ceil((total.value + 1) / params.value.pagesize) //向上取整
+    params.value.pagenum = lastPage
+  }
+  getArticleList()
 }
 </script>
 
@@ -67,7 +76,6 @@ const onDeleteArticle = (row) => {
     <template #extra>
       <el-button type="primary" @click="onAddArticle">添加文章</el-button>
     </template>
-
     <!-- 表单区域 -->
     <el-form inline>
       <el-form-item label="文章分类:" style="width: 200px">
@@ -132,14 +140,7 @@ const onDeleteArticle = (row) => {
       style="margin-top: 20px; justify-content: flex-end"
     ></el-pagination>
     <!-- 抽屉 -->
-    <el-drawer
-      v-model="visibleDrawer"
-      title="大标题"
-      direction="rtl"
-      size="50%"
-    >
-      <span>抽屉内容</span>
-    </el-drawer>
+    <ArticleEdit ref="articleEditRef" @success="onSuccess"></ArticleEdit>
   </PageContainer>
 </template>
 
